@@ -3,12 +3,14 @@ import 'package:objectbox/objectbox.dart';
 @Entity()
 class Item {
   @Id()
-  int itemId;
+  int? id;
+  String itemId;
   String itemName;
   String barcode;
 
   Item({
-    this.itemId = 0,
+    this.id,
+    required this.itemId,
     required this.itemName,
     required this.barcode,
   });

@@ -20,8 +20,13 @@ class CreateBloc extends Bloc<CreateEvent, CreateState> {
   CreateBloc() : super(CreateInitial()) {
     on<OnSave>((event, emit) async {
       if (validate(event)) {
-        List<int> result = await DBHelper.putItem(Objectbox.store_,
-            data: [Item(itemName: event.itemName, barcode: event.barcode)]);
+        List<int> result = await DBHelper.putItem(Objectbox.store_, data: [
+          Item(
+              id: event.id ?? 0,
+              itemId: event.itemId,
+              itemName: event.itemName,
+              barcode: event.barcode)
+        ]);
         if (result.isNotEmpty) {
           emit(CreateSuccess());
         }
@@ -32,6 +37,12 @@ class CreateBloc extends Bloc<CreateEvent, CreateState> {
             barcodeError: barcodeError));
       }
     });
+  }
+
+  void edit(Item item) {
+    itemIdTEC.text = item.itemId.toString();
+    itemNameTEC.text = item.itemName;
+    barcodeTEC.text = item.barcode;
   }
 
   bool validate(OnSave data) {

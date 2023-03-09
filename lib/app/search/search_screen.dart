@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_crud/app/create/bloc/create_bloc.dart';
+import 'package:flutter_crud/app/create/create_screen.dart';
 import 'package:flutter_crud/components/custom_text_field.dart';
 import 'package:flutter_crud/components/item_card.dart';
 import 'package:flutter_crud/consts/colors.dart';
@@ -73,6 +75,18 @@ class SearchScreen extends StatelessWidget {
                             itemId: state.items[index].itemId.toString(),
                             itemName: state.items[index].itemName,
                             barcode: state.items[index].barcode,
+                            onEdit: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => BlocProvider<CreateBloc>(
+                                          create: (context) => CreateBloc()
+                                            ..edit(state.items[index]),
+                                          child: CreateScreen(
+                                              id: state.items[index].id,
+                                              isEdit: true),
+                                        ))),
+                            onDelete: () => bloc
+                                .add(DeleteItem(id: state.items[index].id!)),
                           );
                         })
                     : const Center(child: CircularProgressIndicator());

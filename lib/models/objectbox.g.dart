@@ -22,14 +22,14 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 539025130278003303),
       name: 'Item',
-      lastPropertyId: const IdUid(3, 528116626579896989),
+      lastPropertyId: const IdUid(4, 1600689765158829270),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
             id: const IdUid(1, 3019670468509579028),
             name: 'itemId',
-            type: 6,
-            flags: 1),
+            type: 9,
+            flags: 0),
         ModelProperty(
             id: const IdUid(2, 1348731338195809604),
             name: 'itemName',
@@ -39,7 +39,12 @@ final _entities = <ModelEntity>[
             id: const IdUid(3, 528116626579896989),
             name: 'barcode',
             type: 9,
-            flags: 0)
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 1600689765158829270),
+            name: 'id',
+            type: 6,
+            flags: 1)
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
@@ -82,27 +87,31 @@ ModelDefinition getObjectBoxModel() {
         model: _entities[0],
         toOneRelations: (Item object) => [],
         toManyRelations: (Item object) => {},
-        getId: (Item object) => object.itemId,
+        getId: (Item object) => object.id,
         setId: (Item object, int id) {
-          object.itemId = id;
+          object.id = id;
         },
         objectToFB: (Item object, fb.Builder fbb) {
+          final itemIdOffset = fbb.writeString(object.itemId);
           final itemNameOffset = fbb.writeString(object.itemName);
           final barcodeOffset = fbb.writeString(object.barcode);
-          fbb.startTable(4);
-          fbb.addInt64(0, object.itemId);
+          fbb.startTable(5);
+          fbb.addOffset(0, itemIdOffset);
           fbb.addOffset(1, itemNameOffset);
           fbb.addOffset(2, barcodeOffset);
+          fbb.addInt64(3, object.id ?? 0);
           fbb.finish(fbb.endTable());
-          return object.itemId;
+          return object.id ?? 0;
         },
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
 
           final object = Item(
-              itemId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              id: const fb.Int64Reader()
+                  .vTableGetNullable(buffer, rootOffset, 10),
+              itemId: const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 4, ''),
               itemName: const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
               barcode: const fb.StringReader(asciiOptimization: true)
@@ -118,11 +127,14 @@ ModelDefinition getObjectBoxModel() {
 /// [Item] entity fields to define ObjectBox queries.
 class Item_ {
   /// see [Item.itemId]
-  static final itemId = QueryIntegerProperty<Item>(_entities[0].properties[0]);
+  static final itemId = QueryStringProperty<Item>(_entities[0].properties[0]);
 
   /// see [Item.itemName]
   static final itemName = QueryStringProperty<Item>(_entities[0].properties[1]);
 
   /// see [Item.barcode]
   static final barcode = QueryStringProperty<Item>(_entities[0].properties[2]);
+
+  /// see [Item.id]
+  static final id = QueryIntegerProperty<Item>(_entities[0].properties[3]);
 }

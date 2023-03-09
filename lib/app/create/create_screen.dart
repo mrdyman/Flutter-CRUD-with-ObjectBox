@@ -4,10 +4,13 @@ import 'package:flutter_crud/app/dashboard/dashboard_screen.dart';
 import 'package:flutter_crud/components/custom_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../models/item.dart';
 import 'bloc/create_bloc.dart';
 
 class CreateScreen extends StatelessWidget {
-  const CreateScreen({super.key});
+  final bool isEdit;
+  final int? id;
+  const CreateScreen({this.isEdit = false, this.id, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +18,7 @@ class CreateScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
-              onPressed: () => Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const DashboardScreen())),
+              onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.arrow_back)),
           title: const Text('Create New Data')),
       body: BlocListener<CreateBloc, CreateState>(
@@ -127,10 +129,11 @@ class CreateScreen extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
                       onPressed: () => bloc.add(OnSave(
+                          id: id,
                           itemId: bloc.itemIdTEC.text,
                           itemName: bloc.itemNameTEC.text,
                           barcode: bloc.barcodeTEC.text)),
-                      child: const Text('Simpan')))
+                      child: Text(isEdit ? 'Update' : 'Simpan')))
             ],
           ),
         ),

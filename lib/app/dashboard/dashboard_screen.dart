@@ -13,13 +13,12 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(Icons.arrow_back),
         title: const Text('Dashboard'),
       ),
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Align(
           child: ElevatedButton(
-            onPressed: () => Navigator.pushReplacement(
+            onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (_) => BlocProvider<CreateBloc>(

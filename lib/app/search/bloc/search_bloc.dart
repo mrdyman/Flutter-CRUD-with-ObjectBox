@@ -16,6 +16,19 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(SearchLoaded(items: items));
     });
 
+    on<DeleteItem>((event, emit) async {
+      bool delete =
+          await DBHelper.deleteItem(Objectbox.store_, itemId: event.id);
+      emit(SearchLoading());
+      List<Item> items = await DBHelper.getItems(Objectbox.store_);
+      if (delete) {
+        emit(SearchDeleteSuccess());
+      } else {
+        emit(SearchDeleteFailed());
+      }
+      emit(SearchLoaded(items: items));
+    });
+
     on<SearchItem>((event, emit) async {
       emit(SearchLoading());
       List<Item> items = await DBHelper.getItems(Objectbox.store_);
