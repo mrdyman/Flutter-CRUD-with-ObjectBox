@@ -65,32 +65,37 @@ class SearchScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            Expanded(child: BlocBuilder<SearchBloc, SearchState>(
-              builder: (context, state) {
-                return state is SearchLoaded
-                    ? ListView.builder(
-                        itemCount: state.items.length,
-                        itemBuilder: (context, index) {
-                          return ItemCard(
-                            itemId: state.items[index].itemId.toString(),
-                            itemName: state.items[index].itemName,
-                            barcode: state.items[index].barcode,
-                            onEdit: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => BlocProvider<CreateBloc>(
-                                          create: (context) => CreateBloc()
-                                            ..edit(state.items[index]),
-                                          child: CreateScreen(
-                                              id: state.items[index].id,
-                                              isEdit: true),
-                                        ))),
-                            onDelete: () => bloc
-                                .add(DeleteItem(id: state.items[index].id!)),
-                          );
-                        })
-                    : const Center(child: CircularProgressIndicator());
-              },
+            Expanded(
+                child: RefreshIndicator(
+              onRefresh: () async => bloc.add(GetItems()),
+              child: BlocBuilder<SearchBloc, SearchState>(
+                builder: (context, state) {
+                  return state is SearchLoaded
+                      ? ListView.builder(
+                          itemCount: state.items.length,
+                          itemBuilder: (context, index) {
+                            return ItemCard(
+                              itemId: state.items[index].itemId.toString(),
+                              itemName: state.items[index].itemName,
+                              barcode: state.items[index].barcode,
+                              onEdit: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => BlocProvider<CreateBloc>(
+                                            create: (context) => CreateBloc()
+                                              ..edit(state.items[index]),
+                                            child: CreateScreen(
+                                                id: state.items[index].id,
+                                                isEdit: true),
+                                          ))).then(
+                                  (value) => bloc.add(GetItems())),
+                              onDelete: () => bloc
+                                  .add(DeleteItem(id: state.items[index].id!)),
+                            );
+                          })
+                      : const Center(child: CircularProgressIndicator());
+                },
+              ),
             ))
           ]),
         ),
