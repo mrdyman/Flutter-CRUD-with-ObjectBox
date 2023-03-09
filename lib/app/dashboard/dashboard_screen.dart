@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_crud/app/create/bloc/create_bloc.dart';
 import 'package:flutter_crud/app/create/create_screen.dart';
+import 'package:flutter_crud/app/search/bloc/search_bloc.dart';
 
 import '../search/search_screen.dart';
 
@@ -30,7 +31,12 @@ class DashboardScreen extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () => Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const SearchScreen())),
+              context,
+              MaterialPageRoute(
+                  builder: (_) => BlocProvider<SearchBloc>(
+                        create: (context) => SearchBloc()..add(GetItems()),
+                        child: const SearchScreen(),
+                      ))),
           child: const Text('Search Item'),
         )
       ]),

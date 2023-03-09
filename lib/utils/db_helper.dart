@@ -4,7 +4,7 @@ import '../models/item.dart';
 
 class DBHelper {
   /// Get all items
-  static Future<List<Item>> getProduct(Store store) async {
+  static Future<List<Item>> getItems(Store store) async {
     List<Item> items = store.box<Item>().getAll();
     return items;
   }

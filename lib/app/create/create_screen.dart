@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_crud/app/dashboard/dashboard_screen.dart';
 import 'package:flutter_crud/components/custom_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -13,7 +14,10 @@ class CreateScreen extends StatelessWidget {
     CreateBloc bloc = BlocProvider.of<CreateBloc>(context);
     return Scaffold(
       appBar: AppBar(
-          leading: const Icon(Icons.arrow_back),
+          leading: IconButton(
+              onPressed: () => Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const DashboardScreen())),
+              icon: const Icon(Icons.arrow_back)),
           title: const Text('Create New Data')),
       body: BlocListener<CreateBloc, CreateState>(
         listener: (context, state) {
